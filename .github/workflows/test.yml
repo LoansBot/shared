@@ -1,0 +1,79 @@
+name: CI
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python_version: [3.7, 3.8]
+    services:
+      postgres:
+        image: postgres:10
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: dev
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      rabbitmq:
+        image: rabbitmq
+        ports:
+          - 5672/tcp
+      memcached:
+        image: memcached
+        ports:
+          - 11211/tcp
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+      with:
+        repository: LoansBot/database
+        path: ./database
+    - name: Setup Python ${{ matrix.python_version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python_version }}
+    - name: Install python dependencies
+      run: |
+        sudo apt update
+        sudo apt install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev postgresql-common libpq-dev postgresql-client
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install -r database/requirements.txt
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82,F841,E302,E303,F401,E261,E306,E131,W292 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Prepare database
+      working-directory: ./database/src
+      run: |
+        python run_migrations.py
+      env:
+        DATABASE_HOST: localhost
+        DATABASE_PORT: ${{ job.services.postgres.ports['5432'] }}
+        DATABASE_USER: postgres
+        DATABASE_PASSWORD: dev
+        DATABASE_DBNAME: postgres
+    - name: Run tests
+      working-directory: ./tests
+      env:
+        PGHOST: localhost
+        PGUSER: postgres
+        PGPASSWORD: dev
+        PGPORT: ${{ job.services.postgres.ports['5432'] }}
+        AMQP_HOST: localhost
+        AMQP_PORT: ${{ job.services.rabbitmq.ports['5672'] }}
+        AMQP_USERNAME: guest
+        AMQP_PASSWORD: guest
+        AMQP_VHOST: "/"
+        MEMCACHED_HOST: localhost
+        MEMCACHED_PORT: ${{ job.services.memcached.ports['11211'] }}
+      run: |
+        python -m unittest discover -s .
