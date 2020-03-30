@@ -36,7 +36,6 @@ class TestIntegrations(unittest.TestCase):
         with LazyIntegrations() as itgs:
             itgs.logger.print(Level.DEBUG, 'Hello world!')
 
-
     def test_cache(self):
         with LazyIntegrations() as itgs:
             key = 'test_integrations'
