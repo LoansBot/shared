@@ -83,6 +83,7 @@ class LazyIntegrations:
             'lazy_integrations.py',
             logger_conn
         )
+        self._logger.prepare()
 
         def closure(*args):
             self._logger.connection.close()
