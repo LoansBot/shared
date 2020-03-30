@@ -158,7 +158,7 @@ class LazyIntegrations:
         if self._cache is not None:
             return self._cache
 
-        self._cache = itgs.memcached()
+        self._cache = itgs.cache()
 
         def closure(*args):
             self._cache.close()
