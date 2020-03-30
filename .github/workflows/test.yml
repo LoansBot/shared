@@ -32,10 +32,16 @@ jobs:
           - 11211/tcp
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: ./shared
     - uses: actions/checkout@v2
       with:
         repository: LoansBot/database
         path: ./database
+    - uses: actions/checkout@v2
+      with:
+        repository: LoansBot/logging
+        path: ./logging
     - name: Setup Python ${{ matrix.python_version }}
       uses: actions/setup-python@v1
       with:
@@ -46,11 +52,12 @@ jobs:
         sudo apt install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev postgresql-common libpq-dev postgresql-client
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt
+        python -m pip install -r logging/requirements.txt
         python -m pip install -r database/requirements.txt
     - name: Lint with flake8
       run: |
-        flake8 . --count --select=E9,F63,F7,F82,F841,E302,E303,F401,E261,E306,E131,W292 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 ./shared --count --select=E9,F63,F7,F82,F841,E302,E303,F401,E261,E306,E131,W292 --show-source --statistics
+        flake8 ./shared --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Prepare database
       working-directory: ./database/src
       run: |
@@ -61,8 +68,14 @@ jobs:
         DATABASE_USER: postgres
         DATABASE_PASSWORD: dev
         DATABASE_DBNAME: postgres
+    - name: Prepare running directory
+      run: |
+        mkdir ./working
+        mv ./shared/src ./working/src
+        mv ./shared/tests ./working/tests
+        mv ./logging/src/lblogging ./working/src/lblogging
     - name: Run tests
-      working-directory: ./tests
+      working-directory: ./shared/tests
       env:
         PGHOST: localhost
         PGUSER: postgres
