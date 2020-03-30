@@ -29,7 +29,7 @@ reconnect a little bit).
 """
 import psycopg2
 import pika
-import membase
+from pymemcache.client import base as membase
 import os
 
 
