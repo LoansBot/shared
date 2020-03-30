@@ -77,7 +77,6 @@ jobs:
         mv ./shared/tests ./working/tests
         mv ./logging/src/lblogging ./working/src/lblogging
     - name: Run tests
-      working-directory: ./shared/tests
       env:
         PGHOST: localhost
         PGUSER: postgres
@@ -91,4 +90,4 @@ jobs:
         MEMCACHED_HOST: localhost
         MEMCACHED_PORT: ${{ job.services.memcached.ports['11211'] }}
       run: |
-        python -m unittest discover -s .
+        python -m unittest discover -s ./working/tests
