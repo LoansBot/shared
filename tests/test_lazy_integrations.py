@@ -3,6 +3,7 @@ module are able to service simple requests"""
 import unittest
 import sys
 import secrets
+from lblogging import Level
 
 sys.path.append("../src")
 
@@ -30,6 +31,11 @@ class TestIntegrations(unittest.TestCase):
                 itgs.channel.cancel()
                 self.assertEqual(body, pub_body)
                 break
+
+    def test_logger(self):
+        with LazyIntegrations() as itgs:
+            itgs.logger.print(Level.DEBUG, 'Hello world!')
+
 
     def test_cache(self):
         with LazyIntegrations() as itgs:
