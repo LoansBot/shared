@@ -26,7 +26,7 @@ class TestIntegrations(unittest.TestCase):
                     # 3.8+
                     signal.raise_signal(signal.SIGTERM)
                 else:
-                    os.kill(os.pid, signal.SIGTERM)
+                    os.kill(os.getpid(), signal.SIGTERM)
 
                 self.assertFalse(saw_sigterm)
             self.assertTrue(saw_sigterm)
