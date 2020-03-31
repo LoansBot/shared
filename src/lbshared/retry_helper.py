@@ -23,6 +23,7 @@ def handle(time_between_restarts=10):
     if time_since_opened < time_between_restarts:
         time.sleep(time_between_restarts - time_since_opened)
 
+
 def last_opened_at():
     """Determines when store_opened_at was last called"""
     if not os.path.exists(FILENAME):
@@ -37,4 +38,4 @@ def last_opened_at():
 def store_opened_at():
     """Updates the retry helper file to indicate we were just run"""
     with open(FILENAME, 'w') as f:
-        json.dump({'last_started_at': time.time()})
+        json.dump({'last_started_at': time.time()}, f)

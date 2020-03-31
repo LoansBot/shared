@@ -2,7 +2,6 @@
 module are able to service simple requests"""
 import unittest
 import sys
-import secrets
 import time
 
 sys.path.append("../src")
