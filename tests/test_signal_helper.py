@@ -3,6 +3,7 @@ module are able to service simple requests"""
 import unittest
 import sys
 import signal
+import os
 
 sys.path.append("../src")
 
@@ -21,7 +22,12 @@ class TestIntegrations(unittest.TestCase):
         try:
             with signal_helper.delay_signals():
                 self.assertFalse(saw_sigterm)
-                signal.raise_signal(signal.SIGTERM)
+                if hasattr(signal, 'raise_signal'):
+                    # 3.8+
+                    signal.raise_signal(signal.SIGTERM)
+                else:
+                    os.kill(os.pid, signal.SIGTERM)
+
                 self.assertFalse(saw_sigterm)
             self.assertTrue(saw_sigterm)
         finally:
