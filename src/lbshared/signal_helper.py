@@ -21,7 +21,7 @@ def delay_signals(itgs: typing.Optional[LazyIntegrations] = None):
     This will only re-raise the most urgent signal received while delaying,
     so for example if this gets both a SIGINT and a SIGTERM, only SIGTERM is
     re-raised at the end of the block. Re-raising both would be unreliable."""
-    callback, tmp_handlers = _get_delayed_handlers()
+    callback, tmp_handlers = _get_delayed_handlers(itgs)
     old_handlers = _apply_handlers(*tmp_handlers)
     try:
         yield
