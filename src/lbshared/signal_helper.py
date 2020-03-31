@@ -9,6 +9,7 @@ shutdown from SIGQUIT or pulling the plug on the server.
 """
 import signal
 import typing
+import os
 from contextlib import contextmanager
 from .lazy_integrations import LazyIntegrations
 from lblogging import Level
@@ -56,11 +57,11 @@ def _get_delayed_handlers(itgs: typing.Optional[LazyIntegrations]):
     def callback():
         if captured_sigterm:
             _log_reraise(itgs, 'SIGTERM')
-            signal.raise_signal(signal.SIGTERM)
+            _raise_signal(signal.SIGTERM)
             return
         if captured_sigint:
             _log_reraise(itgs, 'SIGINT')
-            signal.raise_signal(signal.SIGINT)
+            _raise_signal(signal.SIGINT)
             return
 
     return callback, (capture_sigint, capture_sigterm)
@@ -84,3 +85,11 @@ def _log_reraise(itgs, signm):
             'Repeating captured {} (critical block finished)',
             signm
         )
+
+
+def _raise_signal(sig):
+    if hasattr(signal, 'raise_signal'):
+        # 3.8+
+        signal.raise_signal(signal.SIGTERM)
+    else:
+        os.kill(os.getpid(), sig)
