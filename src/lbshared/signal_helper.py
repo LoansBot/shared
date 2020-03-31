@@ -90,6 +90,6 @@ def _log_reraise(itgs, signm):
 def _raise_signal(sig):
     if hasattr(signal, 'raise_signal'):
         # 3.8+
-        signal.raise_signal(signal.SIGTERM)
+        signal.raise_signal(sig)
     else:
         os.kill(os.getpid(), sig)
