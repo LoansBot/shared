@@ -19,9 +19,10 @@ def handle(time_between_restarts=10):
     last_open_at = last_opened_at()
     store_opened_at()
 
-    time_since_opened = time.time() - last_open_at
-    if time_since_opened < time_between_restarts:
-        time.sleep(time_between_restarts - time_since_opened)
+    if last_open_at is not None:
+        time_since_opened = time.time() - last_open_at
+        if time_since_opened < time_between_restarts:
+            time.sleep(time_between_restarts - time_since_opened)
 
 
 def last_opened_at():
