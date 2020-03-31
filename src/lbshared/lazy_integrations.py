@@ -40,10 +40,17 @@ class LazyIntegrations:
     Note that callees should not rely on having separate transactions between
     the read and write cursors. In most scenarios either only the read cursor
     should be used or no_read_only should be True.
+
+    @param [bool] no_read_only If True, this MAY NOT initiate a separate
+        read-able connection for the database. Otherwise, this MAY initiate
+        a separate connection.
+    @param [str] logger_iden The identifier to initialize the logger with;
+        typically the file and function initializing the lazy integrations.
     """
-    def __init__(self, no_read_only=False):
+    def __init__(self, no_read_only=False, logger_iden='lazy_integrations.py#logger'):
         self.closures = []
         self.no_read_only = no_read_only
+        self.logger_iden = logger_iden
         self._logger = None
         self._conn = None
         self._cursor = None
@@ -80,7 +87,7 @@ class LazyIntegrations:
         logger_conn.autocommit = True
         self._logger = Logger(
             os.environ.get('APPNAME', 'lbshared'),
-            'lazy_integrations.py',
+            self.logger_iden,
             logger_conn
         )
         self._logger.prepare()
