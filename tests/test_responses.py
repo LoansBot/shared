@@ -26,7 +26,7 @@ class TestResponses(unittest.TestCase):
                     resps.response_body,
                     resps.description
                 ).insert(*[Parameter('%s') for _ in range(3)])
-                .returning(ress.id).get_sql(),
+                .returning(resps.id).get_sql(),
                 (
                     'my_response',
                     'I like to {foo} the {bar}',
