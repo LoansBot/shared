@@ -18,15 +18,15 @@ class TestResponses(unittest.TestCase):
             self.assertIn('my_missing_key', res)
 
     def test_existing(self):
-        responses = Table('responses')
+        resps = Table('responses')
         with LazyIntegrations() as itgs:
             itgs.write_cursor.execute(
-                Query.into(responses).columns(
-                    responses.name,
-                    responses.response_body,
-                    responses.description
+                Query.into(resps).columns(
+                    resps.name,
+                    resps.response_body,
+                    resps.description
                 ).insert(*[Parameter('%s') for _ in range(3)])
-                .returning(responses.id).get_sql(),
+                .returning(ress.id).get_sql(),
                 (
                     'my_response',
                     'I like to {foo} the {bar}',
@@ -48,8 +48,8 @@ class TestResponses(unittest.TestCase):
             finally:
                 itgs.write_conn.rollback()
                 itgs.write_cursor.execute(
-                    Query.from_(responses).delete()
-                    .where(responses.id == Parameter('%s'))
+                    Query.from_(resps).delete()
+                    .where(resps.id == Parameter('%s'))
                     .get_sql(),
                     (respid,)
                 )
