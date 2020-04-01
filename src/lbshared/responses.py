@@ -1,9 +1,18 @@
 """A collection of convenience functions for formatting responses."""
-from collections import defaultdict
 from .lazy_integrations import LazyIntegrations
 from lblogging import Level
 from pypika import PostgreSQLQuery as Query, Table, Parameter
 import traceback
+
+
+class DefaultDictWithKeyArg(dict):
+    """Essentially a default dictionary, except it passes the name of the
+    key to the __missing__ lambda."""
+    def __init__(self, default):
+        self.default = default
+
+    def __missing__(self, key):
+        return self.default(key)
 
 
 def get_response(itgs: LazyIntegrations, name: str, **replacements):
@@ -48,7 +57,7 @@ def get_response(itgs: LazyIntegrations, name: str, **replacements):
         )
         return f'[ERROR: unknown substitution "{key}"]'
 
-    format_dict = defaultdict(factory)
+    format_dict = DefaultDictWithKeyArg(factory)
     return unformatted.format_map(format_dict)
 
 
