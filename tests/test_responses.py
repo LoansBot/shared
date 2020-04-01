@@ -2,7 +2,6 @@
 module are able to service simple requests"""
 import unittest
 import sys
-import time
 from pypika import PostgreSQLQuery as Query, Table, Parameter
 
 sys.path.append("../src")
