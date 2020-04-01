@@ -8,7 +8,8 @@ import traceback
 class DefaultDictWithKeyArg(dict):
     """Essentially a default dictionary, except it passes the name of the
     key to the __missing__ lambda."""
-    def __init__(self, default):
+    def __init__(self, default, **kwargs):
+        super(**kwargs)
         self.default = default
 
     def __missing__(self, key):
@@ -57,7 +58,7 @@ def get_response(itgs: LazyIntegrations, name: str, **replacements):
         )
         return f'[ERROR: unknown substitution "{key}"]'
 
-    format_dict = DefaultDictWithKeyArg(factory)
+    format_dict = DefaultDictWithKeyArg(factory, **replacements)
     return unformatted.format_map(format_dict)
 
 
