@@ -49,7 +49,8 @@ class TestResponses(unittest.TestCase):
                 itgs.write_conn.rollback()
                 itgs.write_cursor.execute(
                     Query.from_(responses).delete()
-                    .where(responses.id == Parameter('%s')),
+                    .where(responses.id == Parameter('%s'))
+                    .get_sql(),
                     (respid,)
                 )
                 itgs.write_conn.commit()
