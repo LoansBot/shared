@@ -57,7 +57,7 @@ class TestIntegrations(unittest.TestCase):
         conn = lbshared.integrations.kvstore()
         try:
             db = conn.createDatabase(name='test_db')
-            coll = conn.createCollection(name='test_coll')
+            coll = db.createCollection(name='test_coll')
 
             key = secrets.token_urlsafe()
             my_secret = secrets.token_urlsafe()
