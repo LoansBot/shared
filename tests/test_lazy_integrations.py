@@ -45,6 +45,22 @@ class TestIntegrations(unittest.TestCase):
             itgs.cache.delete(key)
             self.assertIsNone(itgs.cache.get(key))
 
+    def test_kv(self):
+        with LazyIntegrations() as itgs:
+            key = 'test_integrations'
+            val = secrets.token_urlsafe()
+
+            coll = itgs.kvs_db().createCollection('test_integrations_coll')
+            doc = coll.createDocument()
+            doc['my_secret'] = val
+            doc._key = key
+            doc.save()
+
+            doc = coll[key]
+            self.assertIsNotNone(doc)
+            self.assertEqual(doc._key, key)
+            self.assertEqual(doc.get('my_secret'), val)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -31,6 +31,7 @@ import psycopg2
 import pika
 from pymemcache.client import base as membase
 import os
+from pyArango.connection import Connection
 
 
 def database():
@@ -68,3 +69,20 @@ def cache():
     memcache_host = os.environ['MEMCACHED_HOST']
     memcache_port = int(os.environ['MEMCACHED_PORT'])
     return membase.Client((memcache_host, memcache_port))
+
+
+def kvstore():
+    """
+    Opens a connection to the ArangoDB server
+
+    @return [Connection] The ArangoDB connection
+    """
+    arango_url = os.environ['ARANGO_URL']
+    arango_username = os.environ['ARANGO_USERNAME']
+    arango_password = os.environ['ARANGO_PASSWORD']
+    return Connection(
+        arangoURL=arango_url,
+        username=arango_username,
+        password=arango_password,
+        max_retries=2
+    )
