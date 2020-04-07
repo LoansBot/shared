@@ -61,6 +61,9 @@ class TestIntegrations(unittest.TestCase):
             self.assertEqual(doc._key, key)
             self.assertEqual(doc.get('my_secret'), val)
 
+            doc.delete()
+            coll.delete()
+
 
 if __name__ == '__main__':
     unittest.main()
