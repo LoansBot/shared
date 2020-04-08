@@ -196,7 +196,7 @@ class LazyIntegrations:
         if self._arango_db is not None:
             return self._arango_db
 
-        self._arango_db = self.kvs_conn().createDatabase(
+        self._arango_db = self.kvs_conn.createDatabase(
             name=os.environ['ARANGO_DB']
         )
         return self._arango_db
