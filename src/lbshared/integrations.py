@@ -80,6 +80,8 @@ def kvstore():
     arango_url = os.environ['ARANGO_URL']
     arango_username = os.environ['ARANGO_USERNAME']
     arango_password = os.environ['ARANGO_PASSWORD']
+    print(f'kvstore connecting to url={arango_url} username={arango_username}')
+    print(f'password={arango_password} (password is a {type(arango_password)})')
     return Connection(
         arangoURL=arango_url,
         username=arango_username,
