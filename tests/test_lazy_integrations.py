@@ -50,7 +50,7 @@ class TestIntegrations(unittest.TestCase):
             key = 'test_integrations'
             val = secrets.token_urlsafe()
 
-            coll = itgs.kvs_db.createCollection('test_integrations_coll')
+            coll = itgs.kvs_db.createCollection(name='test_integrations_coll')
             doc = coll.createDocument()
             doc['my_secret'] = val
             doc._key = key
