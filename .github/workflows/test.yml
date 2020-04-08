@@ -30,6 +30,12 @@ jobs:
         image: memcached
         ports:
           - 11211/tcp
+      arangodb:
+        image: arangodb/arangodb
+        ports:
+          - 8529/tcp
+        env:
+          ARANGO_NO_AUTH: 1
     steps:
     - uses: actions/checkout@v2
       with:
@@ -70,12 +76,6 @@ jobs:
         DATABASE_USER: postgres
         DATABASE_PASSWORD: dev
         DATABASE_DBNAME: postgres
-    - name: Prepare ArangoDB
-      uses: xinova/arangodb-action@v1
-      with:
-        arangodb version: 'latest'
-      env:
-        ARANGO_NO_AUTH: 1
     - name: Prepare running directory
       run: |
         mkdir ./working
@@ -96,7 +96,7 @@ jobs:
         AMQP_VHOST: "/"
         MEMCACHED_HOST: localhost
         MEMCACHED_PORT: ${{ job.services.memcached.ports['11211'] }}
-        ARANGO_URL: http://localhost:8529
+        ARANGO_URL: http://localhost:${{ job.services.arangodb.ports['8529'] }}
         ARANGO_USERNAME: root
         ARANGO_PASSWORD: ''
       run: |
