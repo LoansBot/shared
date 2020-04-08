@@ -185,7 +185,7 @@ class LazyIntegrations:
         self._arango_conn = itgs.kvstore()
 
         def closure(*args):
-            self._arango_conn.close()
+            self._arango_conn.disconnectSession()
 
         self.closures.append(closure)
         return self._arango_conn
