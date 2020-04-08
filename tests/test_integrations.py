@@ -74,7 +74,7 @@ class TestIntegrations(unittest.TestCase):
             doc.delete()
             coll.delete()
         finally:
-            conn.close()
+            conn.disconnectSession()
 
 
 if __name__ == '__main__':
