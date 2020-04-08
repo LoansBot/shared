@@ -50,16 +50,18 @@ class TestIntegrations(unittest.TestCase):
             key = 'test_integrations'
             val = secrets.token_urlsafe()
 
-            coll = itgs.kvs_db.createCollection(name='test_integrations_coll')
-            doc = coll.createDocument()
-            doc['my_secret'] = val
-            doc._key = key
+            db = itgs.kvs_db
+            if db.name not in itgs.kvs_conn.list_databases()[1].json()['result']:
+                db.create()
+            coll = itgs.kvs_db.new_collection('test_integrations_coll')
+            doc = coll.new_document(key)
+            doc.body['my_secret'] = val
             doc.save()
 
-            doc = coll[key]
-            self.assertIsNotNone(doc)
-            self.assertEqual(doc._key, key)
-            self.assertEqual(doc.get('my_secret'), val)
+            doc = coll.new_document(key)
+            doc.read()
+            self.assertEqual(doc.key, key)
+            self.assertEqual(doc.body.get('my_secret'), val)
 
             doc.delete()
             coll.delete()
