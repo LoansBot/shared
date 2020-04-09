@@ -186,7 +186,7 @@ class Document:
         body.pop('_id')
         self.body = body
         self.etag = result.headers['etag']
-        print(f'read key={key} got body={body}')
+        print(f'read key={self.key} got body={body}')
         return True, result
 
     def create(self, overwrite=False):
