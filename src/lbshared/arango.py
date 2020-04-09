@@ -197,11 +197,13 @@ class Document:
             overwrite=overwrite
         )
         if result.status_code != 201 and result.status_code != 202:
+            print(f'create failed with status {result.status_code}')
             return False, result
         body = result.json()
         self.key = body['_key']
         self.rev = body['_rev']
         self.etag = result.headers['etag']
+        print(f'create succeeded and gave response={body}')
         return True, result
 
     def save(self):
