@@ -33,6 +33,7 @@ def standard_headers(auth: BasicAuth):
         'Accept': 'application/json'
     }
 
+
 # https://www.arangodb.com/docs/stable/http/database-database-management.html#create-database
 def create_database(cluster: Cluster, auth: BasicAuth, **args: dict):
     return requests.post(
@@ -40,6 +41,7 @@ def create_database(cluster: Cluster, auth: BasicAuth, **args: dict):
         headers=standard_headers(auth),
         json=args
     )
+
 
 # https://www.arangodb.com/docs/stable/http/collection-creating.html#create-collection
 def create_collection(
@@ -49,6 +51,7 @@ def create_collection(
         headers=standard_headers(auth),
         json=args
     )
+
 
 # https://www.arangodb.com/docs/stable/http/document-working-with-documents.html#create-document
 def create_document(
@@ -61,6 +64,7 @@ def create_document(
         json=document
     )
 
+
 # https://www.arangodb.com/docs/stable/http/database-database-management.html#list-of-accessible-databases
 def list_databases(cluster: Cluster, auth: BasicAuth):
     return requests.get(
@@ -68,12 +72,14 @@ def list_databases(cluster: Cluster, auth: BasicAuth):
         headers=standard_headers(auth)
     )
 
+
 # https://www.arangodb.com/docs/stable/http/collection-getting.html#return-information-about-a-collection
 def read_collection(cluster: Cluster, auth: BasicAuth, database: str, collection: str):
     return requests.get(
         cluster.select_url_for_endpoint(f'/_db/{database}/_api/collection/{collection}'),
         headers=standard_headers(auth)
     )
+
 
 # https://www.arangodb.com/docs/stable/http/document-working-with-documents.html#read-document
 def read_document(
@@ -89,6 +95,7 @@ def read_document(
         cluster.select_url_for_endpoint(f'/_db/{database}/_api/document/{collection}/{key}'),
         headers=headers
     )
+
 
 # https://www.arangodb.com/docs/stable/http/document-working-with-documents.html#replace-document
 def replace_document(
@@ -106,6 +113,7 @@ def replace_document(
         json=document
     )
 
+
 # https://www.arangodb.com/docs/stable/http/collection-creating.html#drops-a-collection
 def delete_collection(cluster: Cluster, auth: BasicAuth, database: str, collection: str, **args):
     return requests.delete(
@@ -114,6 +122,7 @@ def delete_collection(cluster: Cluster, auth: BasicAuth, database: str, collecti
         headers=standard_headers(auth),
         params=args
     )
+
 
 # https://www.arangodb.com/docs/stable/http/document-working-with-documents.html#removes-a-document
 def delete_document(
