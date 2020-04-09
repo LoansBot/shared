@@ -140,6 +140,7 @@ def delete_document(
         )
     )
 
+
 # Example:
 # doc = Document(..., key='test')
 # doc.body['foo'] = True
