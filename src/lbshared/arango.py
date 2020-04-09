@@ -271,7 +271,7 @@ class Database:
     def name(self):
         return self.database
 
-    def create(self, *args):
+    def create(self, **args):
         result = create_database(
             self.cluster, self.auth, {'name': self.database, **args}
         )

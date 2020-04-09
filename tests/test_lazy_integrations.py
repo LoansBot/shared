@@ -54,6 +54,7 @@ class TestIntegrations(unittest.TestCase):
             if db.name not in itgs.kvs_conn.list_databases()[1].json()['result']:
                 db.create()
             coll = itgs.kvs_db.new_collection('test_integrations_coll')
+            coll.create()
             doc = coll.new_document(key)
             doc.body['my_secret'] = val
             doc.save()

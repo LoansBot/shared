@@ -55,28 +55,25 @@ class TestIntegrations(unittest.TestCase):
 
     def test_kvs(self):
         conn = lbshared.integrations.kvstore()
-        try:
-            db = conn.new_database('test_db')
-            if db.name not in conn.list_databases()[1].json()['result']:
-                db.create()
-            coll = db.new_collection(name='test_coll')
-            coll.create()
+        db = conn.new_database('test_db')
+        if db.name not in conn.list_databases()[1].json()['result']:
+            db.create()
+        coll = db.new_collection(name='test_coll')
+        coll.create()
 
-            key = secrets.token_urlsafe()
-            my_secret = secrets.token_urlsafe()
-            doc = coll.new_document(key)
-            doc['my_secret'] = my_secret
-            doc.save()
+        key = secrets.token_urlsafe()
+        my_secret = secrets.token_urlsafe()
+        doc = coll.new_document(key)
+        doc['my_secret'] = my_secret
+        doc.save()
 
-            doc = coll.new_document(key)
-            doc.read()
-            self.assertEqual(doc.key, key)
-            self.assertEqual(doc.body.get('my_secret'), my_secret)
-            doc.delete()
+        doc = coll.new_document(key)
+        doc.read()
+        self.assertEqual(doc.key, key)
+        self.assertEqual(doc.body.get('my_secret'), my_secret)
+        doc.delete()
 
-            coll.delete()
-        finally:
-            conn.disconnectSession()
+        coll.delete()
 
 
 if __name__ == '__main__':
