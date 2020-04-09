@@ -1,7 +1,6 @@
 """A simple wrapper around the ArangoDB's HTTP interface to support basic CRUD
 operations."""
 import requests
-from dataclasses import dataclass
 import base64
 import typing
 
@@ -253,6 +252,7 @@ class Collection:
         return Document(
             self.cluster, self.auth, self.database, self.collection, None, key=key
         )
+
 
 class Database:
     def __init__(self, cluster: Cluster, auth: BasicAuth, database: str):
