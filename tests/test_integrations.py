@@ -64,15 +64,24 @@ class TestIntegrations(unittest.TestCase):
         key = secrets.token_urlsafe()
         my_secret = secrets.token_urlsafe()
         doc = coll.new_document(key)
-        doc['my_secret'] = my_secret
+        doc.body['my_secret'] = my_secret
+        doc.create()
+
+        doc = coll.new_document(key)
+        doc.read()
+        self.assertEqual(doc.key, key)
+        self.assertEqual(doc.body.get('my_secret'), my_secret)
+
+        my_secret = secrets.token_urlsafe()
+        doc.body['my_secret'] = my_secret
         doc.save()
 
         doc = coll.new_document(key)
         doc.read()
         self.assertEqual(doc.key, key)
         self.assertEqual(doc.body.get('my_secret'), my_secret)
-        doc.delete()
 
+        doc.delete()
         coll.delete()
 
 

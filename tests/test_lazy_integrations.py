@@ -57,7 +57,7 @@ class TestIntegrations(unittest.TestCase):
             coll.create()
             doc = coll.new_document(key)
             doc.body['my_secret'] = val
-            doc.save()
+            doc.create()
 
             doc = coll.new_document(key)
             doc.read()
