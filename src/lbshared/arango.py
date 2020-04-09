@@ -23,7 +23,9 @@ class BasicAuth:
     def __init__(self, username: str, password: str):
         self.username = username
         self.password = password
-        self.authorization_header = 'Basic ' + base64.b64encode(f'{username}:{password}')
+
+        token = base64.b64encode(f'{username}:{password}'.encode('ascii'))
+        self.authorization_header = f'Basic {token}'
 
 
 def standard_headers(auth: BasicAuth):
