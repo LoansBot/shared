@@ -81,8 +81,6 @@ def kvstore():
     arango_urls = os.environ.get('ARANGO_URLS', 'http://localhost:8529').split(',')
     arango_username = os.environ.get('ARANGO_USERNAME', 'root')
     arango_password = os.environ.get('ARANGO_PASSWORD', '')
-    print(f'kvstore connecting to urls={arango_urls} username={arango_username}')
-    print(f'password={arango_password} (password is a {type(arango_password)})')
 
     return arango.Connection(
         arango.Cluster(arango_urls),
