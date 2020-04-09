@@ -167,6 +167,7 @@ class Document:
         self.etag = None
 
     def read(self, try_304=True):
+        print(f'read with key={self.key}')
         assert self.key is not None
 
         result = read_document(
@@ -174,8 +175,10 @@ class Document:
             self.key, self.etag if try_304 else None
         )
         if result.status_code == 304:
+            print('read got 304')
             return True, result
         if result.status_code != 200:
+            print(f'read failed: {result.status_code}')
             return False, result
         body = result.json()
         self.key = body.pop('_key')
@@ -183,9 +186,11 @@ class Document:
         body.pop('_id')
         self.body = body
         self.etag = result.headers['etag']
+        print(f'read key={key} got body={body}')
         return True, result
 
     def create(self, overwrite=False):
+        print(f'create with key={self.key}, body={self.body}')
         result = create_document(
             self.cluster, self.auth, self.database, self.collection,
             {'_key': self.key, **self.body},
@@ -200,6 +205,7 @@ class Document:
         return True, result
 
     def save(self):
+        print(f'save with key={self.key}, body={self.body}')
         assert self.key is not None
         assert self.rev is not None
         assert self.etag is not None
@@ -215,6 +221,7 @@ class Document:
         return True, result
 
     def delete(self, ignore_revision=False, treat_404_as_success=True):
+        print(f'delete with key={self.key}')
         assert self.key is not None
         assert ignore_revision or (self.etag is not None)
         result = delete_document(
