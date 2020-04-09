@@ -236,6 +236,10 @@ class Collection:
         self.database = database
         self.collection = collection
 
+    @property
+    def name(self):
+        return self.collection
+
     def create(self, **args):
         result = create_collection(
             self.cluster, self.auth, self.database, self.collection,
@@ -262,6 +266,10 @@ class Database:
         self.cluster = cluster
         self.auth = auth
         self.database = database
+
+    @property
+    def name(self):
+        return self.database
 
     def create(self, *args):
         result = create_database(
