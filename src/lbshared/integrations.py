@@ -78,9 +78,9 @@ def kvstore():
 
     @return [Connection] The ArangoDB rest API wrapper
     """
-    arango_urls = os.environ['ARANGO_URLS'].split(',')
-    arango_username = os.environ['ARANGO_USERNAME']
-    arango_password = os.environ['ARANGO_PASSWORD']
+    arango_urls = os.environ.get('ARANGO_URLS', 'http://localhost:8529').split(',')
+    arango_username = os.environ.get('ARANGO_USERNAME', 'root')
+    arango_password = os.environ.get('ARANGO_PASSWORD', '')
     print(f'kvstore connecting to urls={arango_urls} username={arango_username}')
     print(f'password={arango_password} (password is a {type(arango_password)})')
 

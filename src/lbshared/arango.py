@@ -24,7 +24,7 @@ class BasicAuth:
         self.username = username
         self.password = password
 
-        token = base64.b64encode(f'{username}:{password}'.encode('ascii'))
+        token = base64.b64encode(f'{username}:{password}'.encode('ascii')).decode('ascii')
         self.authorization_header = f'Basic {token}'
 
 
@@ -59,7 +59,7 @@ def create_document(
         cluster: Cluster, auth: BasicAuth,
         database: str, collection: str, document: dict, **args):
     return requests.post(
-        cluster.select_url_for_endpoint(f'/_db/{database}/_api/collection'),
+        cluster.select_url_for_endpoint(f'/_db/{database}/_api/document/{collection}'),
         headers=standard_headers(auth),
         params=args,
         json=document
@@ -136,10 +136,10 @@ def delete_document(
 
     return requests.delete(
         cluster.select_url_for_endpoint(
-            f'/_db/{database}/_api/document/{collection}/{key}',
-            headers=headers,
-            params=args
-        )
+            f'/_db/{database}/_api/document/{collection}/{key}'
+        ),
+        headers=headers,
+        params=args
     )
 
 
@@ -167,7 +167,6 @@ class Document:
         self.etag = None
 
     def read(self, try_304=True):
-        print(f'read with key={self.key}')
         assert self.key is not None
 
         result = read_document(
@@ -175,10 +174,8 @@ class Document:
             self.key, self.etag if try_304 else None
         )
         if result.status_code == 304:
-            print('read got 304')
             return True, result
         if result.status_code != 200:
-            print(f'read failed: {result.status_code}')
             return False, result
         body = result.json()
         self.key = body.pop('_key')
@@ -186,28 +183,23 @@ class Document:
         body.pop('_id')
         self.body = body
         self.etag = result.headers['etag']
-        print(f'read key={self.key} got body={body}')
         return True, result
 
     def create(self, overwrite=False):
-        print(f'create with key={self.key}, body={self.body}')
+        document = {'_key': self.key, **self.body}
         result = create_document(
             self.cluster, self.auth, self.database, self.collection,
-            {'_key': self.key, **self.body},
-            overwrite=overwrite
+            document, overwrite=str(overwrite).lower()
         )
         if result.status_code != 201 and result.status_code != 202:
-            print(f'create failed with status {result.status_code}')
             return False, result
         body = result.json()
         self.key = body['_key']
         self.rev = body['_rev']
         self.etag = result.headers['etag']
-        print(f'create succeeded and gave response={body}')
         return True, result
 
     def save(self):
-        print(f'save with key={self.key}, body={self.body}')
         assert self.key is not None
         assert self.rev is not None
         assert self.etag is not None
@@ -223,7 +215,6 @@ class Document:
         return True, result
 
     def delete(self, ignore_revision=False, treat_404_as_success=True):
-        print(f'delete with key={self.key}')
         assert self.key is not None
         assert ignore_revision or (self.etag is not None)
         result = delete_document(
