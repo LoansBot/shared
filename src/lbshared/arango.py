@@ -257,7 +257,7 @@ class Collection:
 
     def new_document(self, key: str):
         return Document(
-            self.cluster, self.auth, self.database, self.collection, None, key=key
+            self.cluster, self.auth, self.database, self.collection, key=key
         )
 
 

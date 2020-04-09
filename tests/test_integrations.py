@@ -58,7 +58,7 @@ class TestIntegrations(unittest.TestCase):
         db = conn.new_database('test_db')
         if db.name not in conn.list_databases()[1].json()['result']:
             db.create()
-        coll = db.new_collection(name='test_coll')
+        coll = db.new_collection('test_coll')
         coll.create()
 
         key = secrets.token_urlsafe()
