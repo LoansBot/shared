@@ -242,8 +242,8 @@ class Collection:
 
     def create(self, **args):
         result = create_collection(
-            self.cluster, self.auth, self.database, self.collection,
-            {'name': self.collection, **args}
+            self.cluster, self.auth, self.database,
+            name=self.collection, **args
         )
         succ = result.status_code == 200
         return succ, result
@@ -273,7 +273,7 @@ class Database:
 
     def create(self, **args):
         result = create_database(
-            self.cluster, self.auth, {'name': self.database, **args}
+            self.cluster, self.auth, name=self.database, **args
         )
         return result.status_code == 201, result
 
