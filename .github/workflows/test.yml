@@ -101,6 +101,8 @@ jobs:
         ARANGO_AUTH_CACHE: disk
         ARANGO_AUTH_USERNAME: root
         ARANGO_AUTH_PASSWORD: mango
+        ARANGO_DISABLE_DATABASE_DELETE: 0
+        ARANGO_DISABLE_COLLECTION_DELETE: 0
         ARANGO_TTL_SECONDS: 3600
         ARANGO_DB: test
       run: |
