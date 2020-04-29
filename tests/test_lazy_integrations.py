@@ -56,7 +56,7 @@ class TestIntegrations(unittest.TestCase):
             self.assertTrue(db.create_if_not_exists())
             coll = db.collection(key)
             self.assertTrue(coll.create_if_not_exists())
-            self.assertTrue(coll.create_or_overwrite_doc(key, val))
+            self.assertIsNone(coll.create_or_overwrite_doc(key, val))
             self.assertEqual(coll.read_doc(key), val)
             self.assertTrue(coll.force_delete_doc(key))
             self.assertTrue(coll.force_delete())
