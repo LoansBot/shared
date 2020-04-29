@@ -35,7 +35,7 @@ jobs:
         ports:
           - 8529/tcp
         env:
-          ARANGO_NO_AUTH: 1
+          ARANGO_ROOT_PASSWORD: mango
     steps:
     - uses: actions/checkout@v2
       with:
@@ -96,9 +96,11 @@ jobs:
         AMQP_VHOST: "/"
         MEMCACHED_HOST: localhost
         MEMCACHED_PORT: ${{ job.services.memcached.ports['11211'] }}
-        ARANGO_URLS: http://localhost:${{ job.services.arangodb.ports['8529'] }}
-        ARANGO_USERNAME: root
-        ARANGO_PASSWORD: ''
+        ARANGO_CLUSTER: http://localhost:${{ job.services.arangodb.ports['8529'] }}
+        ARANGO_AUTH: jwt
+        ARANGO_AUTH_USERNAME: root
+        ARANGO_AUTH_PASSWORD: mango
+        ARANGO_TTL_SECONDS: 3600
         ARANGO_DB: test
       run: |
         python -m unittest discover -s .

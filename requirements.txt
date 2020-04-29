@@ -1,3 +1,4 @@
+arango-crud==1.0.1
 certifi==2020.4.5.1
 chardet==3.0.4
 entrypoints==0.3
@@ -10,6 +11,7 @@ pycodestyle==2.5.0
 pyflakes==2.1.1
 pymemcache==3.0.1
 PyPika==0.36.0
+pytypeutils==0.0.1
 requests==2.23.0
 six==1.14.0
 urllib3==1.25.8

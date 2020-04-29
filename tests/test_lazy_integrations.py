@@ -47,25 +47,20 @@ class TestIntegrations(unittest.TestCase):
 
     def test_kv(self):
         with LazyIntegrations() as itgs:
-            key = 'test_integrations'
+            key = 'test_lazy_integrations'
             val = secrets.token_urlsafe()
 
-            db = itgs.kvs_db
-            if db.name not in itgs.kvs_conn.list_databases()[1].json()['result']:
-                db.create()
-            coll = itgs.kvs_db.new_collection('test_integrations_coll')
-            coll.create()
-            doc = coll.new_document(key)
-            doc.body['my_secret'] = val
-            doc.create()
+            self.assertIsNotNone(itgs.kvs_db)
 
-            doc = coll.new_document(key)
-            doc.read()
-            self.assertEqual(doc.key, key)
-            self.assertEqual(doc.body.get('my_secret'), val)
-
-            doc.delete()
-            coll.delete()
+            db = itgs.kvs_conn.database(key)
+            self.assertTrue(db.create_if_not_exists())
+            coll = db.collection(key)
+            self.assertTrue(coll.create_if_not_exists())
+            self.assertTrue(coll.create_or_overwrite_doc(key, val))
+            self.assertEqual(coll.read_doc(key), val)
+            self.assertTrue(coll.force_delete_doc(key))
+            self.assertTrue(coll.force_delete())
+            self.assertTrue(db.force_delete())
 
 
 if __name__ == '__main__':

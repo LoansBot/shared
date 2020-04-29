@@ -31,7 +31,7 @@ import psycopg2
 import pika
 from pymemcache.client import base as membase
 import os
-from . import arango
+from arango_crud import env_config
 
 
 def database():
@@ -76,13 +76,6 @@ def kvstore():
     This doesn't actually do anything, since Arango operates on a rest API,
     but it returns the convienent object for using that rest api
 
-    @return [Connection] The ArangoDB rest API wrapper
+    @return [Config] The ArangoDB rest API wrapper
     """
-    arango_urls = os.environ.get('ARANGO_URLS', 'http://localhost:8529').split(',')
-    arango_username = os.environ.get('ARANGO_USERNAME', 'root')
-    arango_password = os.environ.get('ARANGO_PASSWORD', '')
-
-    return arango.Connection(
-        arango.Cluster(arango_urls),
-        arango.BasicAuth(arango_username, arango_password)
-    )
+    return env_config()

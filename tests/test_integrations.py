@@ -55,34 +55,34 @@ class TestIntegrations(unittest.TestCase):
 
     def test_kvs(self):
         conn = lbshared.integrations.kvstore()
-        db = conn.new_database('test_db')
-        if db.name not in conn.list_databases()[1].json()['result']:
-            db.create()
-        coll = db.new_collection('test_coll')
-        coll.create()
+        db = conn.database('test_db')
+        self.assertTrue(db.create_if_not_exists())
+        coll = db.collection('test_coll')
+        self.assertTrue(coll.create_if_not_exists())
 
         key = secrets.token_urlsafe()
         my_secret = secrets.token_urlsafe()
-        doc = coll.new_document(key)
+        doc = coll.document(key)
         doc.body['my_secret'] = my_secret
-        doc.create()
+        self.assertTrue(doc.create())
 
-        doc = coll.new_document(key)
-        doc.read()
+        doc = coll.document(key)
+        self.assertTrue(doc.read())
         self.assertEqual(doc.key, key)
         self.assertEqual(doc.body.get('my_secret'), my_secret)
 
         my_secret = secrets.token_urlsafe()
         doc.body['my_secret'] = my_secret
-        doc.save()
+        self.assertTrue(doc.compare_and_swap())
 
-        doc = coll.new_document(key)
-        doc.read()
+        doc = coll.document(key)
+        self.assertTrue(doc.read())
         self.assertEqual(doc.key, key)
         self.assertEqual(doc.body.get('my_secret'), my_secret)
 
-        doc.delete()
-        coll.delete()
+        self.assertTrue(doc.compare_and_delete())
+        self.assertTrue(coll.force_delete())
+        self.assertTrue(db.force_delete())
 
 
 if __name__ == '__main__':
