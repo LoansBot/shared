@@ -31,6 +31,7 @@ import psycopg2
 import pika
 from pymemcache.client import base as membase
 import os
+from arango_crud import env_config
 
 
 def database():
@@ -68,3 +69,13 @@ def cache():
     memcache_host = os.environ['MEMCACHED_HOST']
     memcache_port = int(os.environ['MEMCACHED_PORT'])
     return membase.Client((memcache_host, memcache_port))
+
+
+def kvstore():
+    """
+    This doesn't actually do anything, since Arango operates on a rest API,
+    but it returns the convienent object for using that rest api
+
+    @return [Config] The ArangoDB rest API wrapper
+    """
+    return env_config()

@@ -53,6 +53,37 @@ class TestIntegrations(unittest.TestCase):
         finally:
             client.close()
 
+    def test_kvs(self):
+        conn = lbshared.integrations.kvstore()
+        db = conn.database('test_db')
+        self.assertTrue(db.create_if_not_exists())
+        coll = db.collection('test_coll')
+        self.assertTrue(coll.create_if_not_exists())
+
+        key = secrets.token_urlsafe()
+        my_secret = secrets.token_urlsafe()
+        doc = coll.document(key)
+        doc.body['my_secret'] = my_secret
+        self.assertTrue(doc.create())
+
+        doc = coll.document(key)
+        self.assertTrue(doc.read())
+        self.assertEqual(doc.key, key)
+        self.assertEqual(doc.body.get('my_secret'), my_secret)
+
+        my_secret = secrets.token_urlsafe()
+        doc.body['my_secret'] = my_secret
+        self.assertTrue(doc.compare_and_swap())
+
+        doc = coll.document(key)
+        self.assertTrue(doc.read())
+        self.assertEqual(doc.key, key)
+        self.assertEqual(doc.body.get('my_secret'), my_secret)
+
+        self.assertTrue(doc.compare_and_delete())
+        self.assertTrue(coll.force_delete())
+        self.assertTrue(db.force_delete())
+
 
 if __name__ == '__main__':
     unittest.main()

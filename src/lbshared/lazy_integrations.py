@@ -20,6 +20,8 @@ used.
 from . import integrations as itgs
 from lblogging import Logger
 import os
+from arango_crud.config import Config
+from arango_crud.database import Database
 
 
 class LazyIntegrations:
@@ -57,6 +59,8 @@ class LazyIntegrations:
         self._amqp = None
         self._channel = None
         self._cache = None
+        self._arango_conn = None
+        self._arango_db = None
 
     def __enter__(self):
         return self
@@ -173,3 +177,21 @@ class LazyIntegrations:
 
         self.closures.append(closure)
         return self._cache
+
+    @property
+    def kvs_conn(self) -> Config:
+        """Get the connection for ArangoDB"""
+        if self._arango_conn is not None:
+            return self._arango_conn
+
+        self._arango_conn = itgs.kvstore()
+        return self._arango_conn
+
+    @property
+    def kvs_db(self) -> Database:
+        """Get the Arango DB which all collections are in"""
+        if self._arango_db is not None:
+            return self._arango_db
+
+        self._arango_db = self.kvs_conn.database(os.environ['ARANGO_DB'])
+        return self._arango_db
