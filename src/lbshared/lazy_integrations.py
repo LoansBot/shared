@@ -20,7 +20,8 @@ used.
 from . import integrations as itgs
 from lblogging import Logger
 import os
-from arango_crud import Config, Database
+from arango_crud.config import Config
+from arango_crud.database import Database
 
 
 class LazyIntegrations:
