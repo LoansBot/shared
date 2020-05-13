@@ -109,6 +109,15 @@ class LazyIntegrations:
         return self.write_cursor
 
     @property
+    def read_conn(self):
+        """Fetches the database connection that is only promised to
+        support reads. This may be the same connection as read_conn.
+        This is useful if you performed a long read connection and you want
+        to close the transaction.
+        """
+        return self.write_conn
+
+    @property
     def write_conn(self):
         """Fetch the writable database connection"""
         return self.write_conn_and_cursor[0]
