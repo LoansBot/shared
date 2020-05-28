@@ -1,7 +1,6 @@
 """Test the queries module"""
 import unittest
 import sys
-import secrets
 
 sys.path.append("../src")
 
