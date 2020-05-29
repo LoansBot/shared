@@ -62,9 +62,9 @@ class TestRatelimits(unittest.TestCase):
     def test_consume_after_multiple_partial_refill(self):
         with LazyItgs() as itgs:
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 10))
-            time.sleep(0.105)
+            time.sleep(0.115)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 6))
-            time.sleep(0.105)
+            time.sleep(0.115)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 5))
             self.assertFalse(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 2))
 
@@ -81,11 +81,11 @@ class TestRatelimits(unittest.TestCase):
     def test_consume_more_than_available_not_strict(self):
         with LazyItgs() as itgs:
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 10))
-            time.sleep(0.02)
+            time.sleep(0.03)
             self.assertFalse(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 3))
-            time.sleep(0.02)
+            time.sleep(0.03)
             self.assertFalse(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 3))
-            time.sleep(0.02)
+            time.sleep(0.03)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 3))
 
     def test_consume_more_than_available_strict(self):
@@ -98,11 +98,11 @@ class TestRatelimits(unittest.TestCase):
         )
         with LazyItgs() as itgs:
             self.assertTrue(lbshared.ratelimits.consume(itgs, settings, 'foo', 10))
-            time.sleep(0.02)
+            time.sleep(0.03)
             self.assertFalse(lbshared.ratelimits.consume(itgs, settings, 'foo', 3))
-            time.sleep(0.02)
+            time.sleep(0.03)
             self.assertFalse(lbshared.ratelimits.consume(itgs, settings, 'foo', 3))
-            time.sleep(0.02)
+            time.sleep(0.03)
             self.assertFalse(lbshared.ratelimits.consume(itgs, settings, 'foo', 3))
 
 
