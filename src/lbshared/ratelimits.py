@@ -75,6 +75,7 @@ def consume(itgs, settings, consumer, amt) -> bool:
         except:  # noqa
             if i != 0:
                 raise
+            result = None
             itgs.logger.exception(Level.WARN)
 
         if result is not None:
