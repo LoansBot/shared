@@ -89,7 +89,7 @@ def consume(itgs, settings, consumer, amt) -> bool:
                     settings.collection_name
                 )
 
-        time.sleep(min(0.05 * (2 ** i)), 1)
+        time.sleep(min(0.05 * (2 ** i), 1))
 
     return False
 
