@@ -131,7 +131,7 @@ def _consume(itgs, settings, consumer, amt):
     if existed:
         success = doc.compare_and_swap(ttl=ttl)
     else:
-        success = doc.create_if_not_exists(ttl=ttl)
+        success = doc.create(ttl=ttl)
 
     if not success:
         return None
