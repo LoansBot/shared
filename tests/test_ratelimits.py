@@ -22,9 +22,13 @@ DEFAULT_SETTINGS = lbshared.ratelimits.Settings(
 
 
 class TestRatelimits(unittest.TestCase):
+    def setUp(self):
+        with LazyItgs() as itgs:
+            itgs.kvs_db.create_if_not_exists()
+
     def tearDown(self):
         with LazyItgs() as itgs:
-            itgs.kvs_db.collection(COLLECTION).force_delete()
+            itgs.kvs_db.force_delete()
 
     def test_consume_from_new_with_initialized_coll(self):
         with LazyItgs() as itgs:
