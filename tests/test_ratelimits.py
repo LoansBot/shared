@@ -99,17 +99,17 @@ class TestRatelimits(unittest.TestCase):
             collection_name=COLLECTION,
             max_tokens=10,
             refill_amount=3,
-            refill_time_ms=50,
+            refill_time_ms=DEFAULT_SETTINGS.refill_time_ms,
             strict=True
         )
         with LazyItgs() as itgs:
             itgs.kvs_db.collection(COLLECTION).create_if_not_exists(ttl=1)
             self.assertTrue(lbshared.ratelimits.consume(itgs, settings, 'foo', 10))
-            time.sleep(DEFAULT_SETTINGS.refill_time_ms / 2000.0)
+            time.sleep(settings.refill_time_ms / 2000.0)
             self.assertFalse(lbshared.ratelimits.consume(itgs, settings, 'foo', 3))
-            time.sleep(DEFAULT_SETTINGS.refill_time_ms / 2000.0)
+            time.sleep(settings.refill_time_ms / 2000.0)
             self.assertFalse(lbshared.ratelimits.consume(itgs, settings, 'foo', 3))
-            time.sleep(DEFAULT_SETTINGS.refill_time_ms / 2000.0)
+            time.sleep(settings.refill_time_ms / 2000.0)
             self.assertFalse(lbshared.ratelimits.consume(itgs, settings, 'foo', 3))
 
 
