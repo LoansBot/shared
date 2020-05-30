@@ -81,11 +81,11 @@ class TestRatelimits(unittest.TestCase):
     def test_consume_more_than_available_not_strict(self):
         with LazyItgs() as itgs:
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 10))
-            time.sleep(0.03)
+            time.sleep(0.02)
             self.assertFalse(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 3))
-            time.sleep(0.03)
+            time.sleep(0.02)
             self.assertFalse(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 3))
-            time.sleep(0.03)
+            time.sleep(0.02)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 3))
 
     def test_consume_more_than_available_strict(self):
