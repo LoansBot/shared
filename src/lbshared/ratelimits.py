@@ -97,8 +97,8 @@ def consume(itgs, settings, consumer, amt) -> bool:
 def _consume(itgs, settings, consumer, amt):
     doc = itgs.kvs_db.collection(settings.collection_name).document(consumer)
 
-    cur_time = time.time()
     existed = doc.read()
+    cur_time = time.time()
     if not existed:
         doc.body = {
             'tokens': settings.max_tokens,
@@ -111,7 +111,7 @@ def _consume(itgs, settings, consumer, amt):
             settings.max_tokens,
             doc.body['tokens'] + num_refills * settings.refill_amount
         )
-        doc.body['last_refill'] += num_refills * settings.refill_time_ms
+        doc.body['last_refill'] += num_refills * (settings.refill_time_ms / 1000.0)
 
     if doc.body['tokens'] >= amt:
         doc.body['tokens'] -= amt
