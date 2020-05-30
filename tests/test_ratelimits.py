@@ -16,7 +16,7 @@ DEFAULT_SETTINGS = lbshared.ratelimits.Settings(
     collection_name=COLLECTION,
     max_tokens=10,
     refill_amount=3,
-    refill_time_ms=50,
+    refill_time_ms=240,
     strict=False
 )
 
@@ -59,16 +59,16 @@ class TestRatelimits(unittest.TestCase):
         with LazyItgs() as itgs:
             itgs.kvs_db.collection(COLLECTION).create_if_not_exists(ttl=1)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 5))
-            time.sleep(0.055)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 6))
 
     def test_consume_after_multiple_partial_refill(self):
         with LazyItgs() as itgs:
             itgs.kvs_db.collection(COLLECTION).create_if_not_exists(ttl=1)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 10))
-            time.sleep(0.115)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms * 2)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 6))
-            time.sleep(0.115)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms * 2)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 5))
             self.assertFalse(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 2))
 
@@ -76,7 +76,7 @@ class TestRatelimits(unittest.TestCase):
         with LazyItgs() as itgs:
             itgs.kvs_db.collection(COLLECTION).create_if_not_exists(ttl=1)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 10))
-            time.sleep(0.205)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms * 4)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 10))
             # TTL can take way too long for us to actually test reliably here since it happens
             # occassionally in the background, so we'll just fake it
@@ -87,11 +87,11 @@ class TestRatelimits(unittest.TestCase):
         with LazyItgs() as itgs:
             itgs.kvs_db.collection(COLLECTION).create_if_not_exists(ttl=1)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 10))
-            time.sleep(0.02)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms / 3)
             self.assertFalse(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 3))
-            time.sleep(0.02)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms / 3)
             self.assertFalse(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 3))
-            time.sleep(0.02)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms / 3)
             self.assertTrue(lbshared.ratelimits.consume(itgs, DEFAULT_SETTINGS, 'foo', 3))
 
     def test_consume_more_than_available_strict(self):
@@ -105,11 +105,11 @@ class TestRatelimits(unittest.TestCase):
         with LazyItgs() as itgs:
             itgs.kvs_db.collection(COLLECTION).create_if_not_exists(ttl=1)
             self.assertTrue(lbshared.ratelimits.consume(itgs, settings, 'foo', 10))
-            time.sleep(0.03)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms / 2)
             self.assertFalse(lbshared.ratelimits.consume(itgs, settings, 'foo', 3))
-            time.sleep(0.03)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms / 2)
             self.assertFalse(lbshared.ratelimits.consume(itgs, settings, 'foo', 3))
-            time.sleep(0.03)
+            time.sleep(DEFAULT_SETTINGS.refill_time_ms / 2)
             self.assertFalse(lbshared.ratelimits.consume(itgs, settings, 'foo', 3))
 
 
