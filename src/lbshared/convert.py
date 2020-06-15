@@ -13,7 +13,7 @@ import time
 from lblogging import Level
 import pytypeutils as tus
 from .lazy_integrations import LazyIntegrations
-import money
+from . import money
 
 
 MEMCACHED_KEY_PREFIX = 'loansbot/convert'
