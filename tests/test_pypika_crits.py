@@ -10,7 +10,7 @@ import lbshared.pypika_crits  # noqa: E402
 
 
 class TestIntegrations(unittest.TestCase):
-    def test_exists(self):
+    def test_exists_no_joins(self):
         users = Table('users')
         cats = Table('cats')
         self.assertEqual(
@@ -22,6 +22,22 @@ class TestIntegrations(unittest.TestCase):
             (
                 'SELECT "id" FROM "users" WHERE '
                 + 'EXISTS (SELECT FROM "cats" WHERE "cats"."user_id"="users"."id")'
+            )
+        )
+
+    def test_exists_with_joins(self):
+        cats = Table('cats')
+        users = Table('users')
+        self.assertEqual(
+            lbshared.pypika_crits.exists(
+                Query.from_(cats)
+                .join(users).on(users.id == cats.user_id)
+                .where(cats.name == 'Kitty')
+            )
+            .get_sql(),
+            (
+                'EXISTS (SELECT FROM "cats" JOIN "users" ON "users"."id"="cats"."user_id"'
+                + ' WHERE "cats"."name"=\'Kitty\')'
             )
         )
 
