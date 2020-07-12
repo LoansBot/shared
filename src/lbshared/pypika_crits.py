@@ -30,14 +30,18 @@ class ExistsCriterion(Criterion):
         )
 
     def _get_container_sql(self, **kwargs):
+        kwargs['quote_char'] = '"'
         return ''.join((
             'SELECT',
             self.container._from_sql(**kwargs),
+            ' ' + ' '.join(
+                join.get_sql(**kwargs) for join in self.container._joins
+            ) if self.container._joins else '',
             self.container._prewhere_sql(**kwargs) if self.container._prewheres else '',
             self.container._where_sql(**kwargs) if self.container._wheres else '',
             self.container._group_sql(**kwargs) if self.container._groupbys else '',
             self.container._having_sql(**kwargs) if self.container._havings else '',
-            self.container._orderby_sql(**kwargs) if self.container._orderbys else ''
+            self.container._orderby_sql(**kwargs) if self.container._orderbys else '',
         ))
 
 
