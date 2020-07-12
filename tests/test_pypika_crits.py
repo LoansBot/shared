@@ -2,7 +2,7 @@
 module are able to service simple requests"""
 import unittest
 import sys
-from pypika import Query, Table, Parameter
+from pypika import Query, Table
 
 sys.path.append("../src")
 
