@@ -16,7 +16,7 @@ DEFAULT_SETTINGS = lbshared.ratelimits.Settings(
     collection_name=COLLECTION,
     max_tokens=10,
     refill_amount=3,
-    refill_time_ms=240,
+    refill_time_ms=1000,
     strict=False
 )
 
