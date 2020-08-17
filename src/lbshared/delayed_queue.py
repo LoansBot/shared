@@ -5,7 +5,7 @@ This will initialize the arango collection if it does not exist with a TTL of
 """
 import uuid
 import requests.exceptions
-from pypika import PostgreSQLQuery as Query, Table, Parameter
+from pypika import PostgreSQLQuery as Query, Table, Parameter, Order
 from lbshared.signal_helper import delay_signals
 from datetime import datetime
 from lblogging import Level
@@ -77,7 +77,7 @@ def store_event(itgs, queue_type, event_at, event, commit=False):
 
 def index_events(
         itgs, queue_type, limit, before_time=None,
-        after_time=None, integrity_failures='include'):
+        after_time=None, order='asc', integrity_failures='include'):
     """Get the next up to limit events from the given queue, ordered from oldest
     event times (i.e., most in the past) to newest event times (i.e., most in
     the future).
@@ -117,6 +117,8 @@ def index_events(
         given date are ignored. Useful when you want past-due events.
     - `after_time (datetime, None)`: If specified events which have an event
         time earlier than this point are not considered. Useful for pagination.
+    - `order (str)`: The order that results are returned in. Either 'asc' for
+        oldest to newest or 'desc' for newest to oldest.
     - `integrity_failures (str)`: How to handle events whose event information
         have been lost. Options are as follows:
         - `include`: They are returned but the `event` is replaced with `None`.
@@ -137,7 +139,7 @@ def index_events(
         Query.from_(del_queue)
         .select(del_queue.uuid, del_queue.event_at)
         .where(del_queue.queue_type == Parameter('%s'))
-        .orderby(del_queue.event_at)
+        .orderby(del_queue.event_at, order=getattr(Order, order))
         .limit(limit)
     )
     args = [queue_type]
