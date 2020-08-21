@@ -13,6 +13,7 @@ from pydantic import BaseModel
 from pypika import PostgreSQLQuery as Query, Table, Parameter
 import time
 import json
+import requests.exceptions
 
 
 class UserSettings(BaseModel):
@@ -89,11 +90,19 @@ def get_settings(itgs, user_id: int) -> UserSettings:
     Returns:
     - `settings (UserSettings)`: The settings for that user.
     """
-    doc = itgs.kvs_db.collection(USER_SETTINGS_COLLECTION).document(str(user_id))
+    coll = itgs.kvs_db.collection(USER_SETTINGS_COLLECTION)
+    doc = coll.document(str(user_id))
 
     if not doc.read():
         doc.body['frozen'] = len(DEFAULTS) - 1
-        if not doc.create():
+
+        try:
+            successful_create = doc.create()
+        except requests.exceptions.HTTPError:
+            coll.create_if_not_exists(ttl=None)
+            successful_create = doc.create()
+
+        if not successful_create:
             doc.read()
 
     base_settings = DEFAULTS[doc.body['frozen']]
