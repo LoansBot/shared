@@ -54,7 +54,7 @@ def store_event(itgs, queue_type, event_at, event, commit=False):
     Returns:
     - event_uuid (str): The uuid assigned to the event
     """
-    event_uuid = uuid.uuid4()
+    event_uuid = str(uuid.uuid4())
 
     coll = itgs.kvs_db.collection('delayed_queue')
     try:
