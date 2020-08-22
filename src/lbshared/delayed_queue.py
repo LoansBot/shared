@@ -73,6 +73,7 @@ def store_event(itgs, queue_type, event_at, event, commit=False):
     )
     if commit:
         itgs.write_conn.commit()
+    return event_uuid
 
 
 def index_events(
