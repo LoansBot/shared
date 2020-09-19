@@ -11,7 +11,7 @@ pycodestyle==2.5.0
 pydantic==1.5.1
 pyflakes==2.1.1
 pymemcache==3.0.1
-PyPika==0.36.0
+PyPika==0.39.1
 pytypeutils==0.0.1
 requests==2.23.0
 six==1.14.0
