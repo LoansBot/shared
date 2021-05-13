@@ -8,7 +8,7 @@ mccabe==0.6.1
 pika==1.1.0
 psycopg2==2.8.4
 pycodestyle==2.5.0
-pydantic==1.5.1
+pydantic==1.6.2
 pyflakes==2.1.1
 pymemcache==3.0.1
 PyPika==0.39.1
