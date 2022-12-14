@@ -65,7 +65,7 @@ jobs:
     - name: Fix flake8 on py3.7
       if: matrix.python_version == 3.7
       run: |
-        python -m pip uninstall importlib-metadata flake8
+        python -m pip uninstall -y importlib-metadata flake8
         python -m pip install importlib-metadata==4.13.0 flake8==3.7.9
     - name: Lint with flake8
       run: |
