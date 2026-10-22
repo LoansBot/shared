@@ -37,19 +37,19 @@ jobs:
         env:
           ARANGO_ROOT_PASSWORD: mango
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         path: ./shared
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         repository: LoansBot/database
         path: ./database
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         repository: LoansBot/logging
         path: ./logging
     - name: Setup Python ${{ matrix.python_version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python_version }}
     - name: Install apt dependencies
